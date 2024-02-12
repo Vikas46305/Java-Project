@@ -1,0 +1,28 @@
+import java.sql.*;
+
+class A
+{
+    public static void main(String[] args)
+    {
+        String Query = "insert into state(name,cm,capital) value('Rajasthan','Bhajan Lal','Jaipur');";
+        try
+        {
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/india","root","admin");
+            Statement stmp = con.createStatement();
+            stmp.executeUpdate(Query);
+            int effact = stmp.executeUpdate(Query);
+            if (effact>0)
+            {
+                System.out.println("Insert SuccessFull"+effact);
+            }
+            else
+            {
+                System.out.println("Try Again");
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println(e);
+        }
+    }
+}

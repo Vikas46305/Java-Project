@@ -1,0 +1,192 @@
+import java.sql.*;
+import java.util.Scanner;
+
+class A
+{
+    private static final String url = "jdbc:mysql://localhost:3306/hotel";
+    private static final String usr= "root";
+    private static final String pass = "admin";
+
+    public static void main(String[] args)
+    {
+        try {
+            Connection con = DriverManager.getConnection(url, usr, pass);
+            while (true)
+            {
+                System.out.println("Welcome.......");
+                System.out.println("1. Book Room");
+                System.out.println("2. View Booking");
+                System.out.println("3. Update Booking");
+                System.out.println("4. Delete Booking");
+                System.out.println("0. Exit");
+                System.out.println("Enter the choice: ");
+                Scanner sc = new Scanner(System.in);
+                int choice = sc.nextInt();
+                switch (choice)
+                {
+                    case 1:
+                        book(con,sc);
+                        break;
+                    case 2:
+                        view(con);
+                        break;
+                    case 3:
+                        update(con,sc);
+                        break;
+                    case 4:
+                        delete(con,sc);
+                    case 0:
+                        exit();
+                        sc.close();
+                        return;
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println(e.getMessage());
+        }
+    }
+    private static void book(Connection con, Scanner sc)
+    {
+        System.out.println("Enter guest name: ");
+        String Name = sc.next();
+        sc.nextLine();
+        System.out.println("Enter Mobile Number: ");
+        String Mobile = sc.nextLine();
+        System.out.println("Enter Adhar Number: ");
+        String Adhar = sc.nextLine();
+        System.out.println("Enter Room Number: ");
+        int Room = sc.nextInt();
+        String q = "insert into res(Name, Room, Mobile, Adhar )" + "value(?,?,?,?)";
+        try
+        {
+            PreparedStatement stmp = con.prepareStatement(q);
+            stmp.setString(1,Name);
+            stmp.setInt(2,Room);
+            stmp.setString(3,Mobile);
+            stmp.setString(4,Adhar);
+            int r = stmp.executeUpdate();
+            if (r>0)
+            {
+                System.out.println("Insert Successfull ");
+            }
+            else
+            {
+                System.out.println("Fail !!   Try AGAIN.......");
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println(e.getMessage());
+        }
+    }
+    private static void view(Connection con)
+    {
+        String q = "select * from res;";
+        try
+        {
+            Statement stmp = con.createStatement();
+            ResultSet rs = stmp.executeQuery(q);
+            while (rs.next())
+            {
+                String Name = rs.getString("Name");
+                String Mobile = rs.getString("Mobile");
+                String Adhar = rs.getString("Adhar");
+                int Room = rs.getInt("Room");
+                int ID = rs.getInt("ID");
+                System.out.println("===============================================");
+                System.out.println(ID+"  ");
+                System.out.print(Name+"  ");
+                System.out.print(Room+"  ");
+                System.out.print(Mobile+"  ");
+                System.out.println(Adhar+"  ");
+                System.out.println("================================================");
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println(e.getMessage());
+        }
+    }
+    private static void update(Connection con, Scanner sc)
+    {
+        System.out.println("Enter ID: ");
+        int ID = sc.nextInt();
+        sc.nextLine();
+        System.out.println("Enter guest name: ");
+        String Name = sc.nextLine();
+        System.out.println("Enter Mobile Number: ");
+        String Mobile = sc.nextLine();
+        System.out.println("Enter Adhar Number: ");
+        String Adhar = sc.nextLine();
+        System.out.println("Enter Room Number: ");
+        int Room = sc.nextInt();
+        String q = "update res set Name = ?,Room = ?,Mobile = ?,Adhar = ? where ID = ?";
+        try
+        {
+              PreparedStatement stmp = con.prepareStatement(q);
+              stmp.setString(1,Name);
+              stmp.setInt(2,Room);
+              stmp.setString(3,Mobile);
+              stmp.setString(4,Adhar);
+              stmp.setInt(5,ID);
+              int r = stmp.executeUpdate();
+              if (r>0)
+              {
+                  System.out.println("Updation SuccessFull");
+              }
+              else
+              {
+                  System.out.println("Fail");
+              }
+        }
+        catch (SQLException e)
+        {
+            System.out.println(e.getMessage());
+        }
+    }
+    private static void delete(Connection con,Scanner sc)
+    {
+        System.out.println("Enter ID");
+        int ID = sc.nextInt();
+        String q = "delete from res where ID = "+ID;
+        try
+        {
+            Statement stmp = con.createStatement();
+            int r = stmp.executeUpdate(q);
+            if (r>0)
+            {
+                System.out.println("Deletion Done ");
+            }
+            else
+            {
+                System.out.println("Fail !!!!");
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println(e.getMessage());
+        }
+    }
+    private static void exit()
+    {
+        try
+        {
+            System.out.print("Exiting");
+            int a=5;
+            while (a!=0)
+            {
+                System.out.print(".");
+                Thread.sleep(500);
+                a--;
+            }
+            System.out.println();
+            System.out.println("Thank you..............");
+        }
+        catch (InterruptedException e)
+        {
+            System.out.println(e.getMessage());
+        }
+    }
+}
